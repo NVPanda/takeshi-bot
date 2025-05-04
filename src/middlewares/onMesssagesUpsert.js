@@ -50,5 +50,21 @@ exports.onMessagesUpsert = async ({ socket, messages, groupCache }) => {
 
       await dynamicCommand(commonFunctions);
     }
+
+    const antiCloneMiddleware = require('./middleware/antiClone');
+
+    sock.ev.on("messages.upsert", async ({ messages }) => {
+      const m = messages[0];
+      if (!m.message) return;
+
+      const sender = m.key.participant || m.key.remoteJid;
+      const isGroup = m.key.remoteJid.endsWith("@g.us");
+
+      const groupMetadata = isGroup ? await sock.groupMetadata(m.key.remoteJid) : null;
+
+      await antiCloneMiddleware({ sock, m, isGroup, sender, groupMetadata });
+
+    });
+
   }
 };
