@@ -43,6 +43,11 @@ exports.SPIDER_API_BASE_URL = "https://api.spiderx.com.br/api";
 
 // Obtenha seu token, criando uma conta em: https://api.spiderx.com.br.
 exports.SPIDER_API_TOKEN = "KcDQFpsSSfB8euRiJDUs";
+exports.OPENAI_API_KEY = "";
+exports.GROK_API_KEY = "";
+exports.GEMINI_API_KEY = "";
+exports.ANTHROPIC_API_KEY = "";
+exports.PIXABAY_API_KEY = "";
 
 // Caso queira responder apenas um grupo específico,
 // coloque o ID dele na configuração abaixo.
