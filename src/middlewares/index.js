@@ -123,7 +123,7 @@ exports.isAdmin = async ({ remoteJid, userJid, socket }) => {
   return isOwner || isAdmin;
 };
 
-<<<<<<< HEAD
+
 exports.isBotOwner = ({ userJid, isLid }) => {
   if (isLid) {
     return userJid === OWNER_LID;
@@ -173,7 +173,7 @@ exports.checkPermission = async ({ type, socket, userJid, remoteJid }) => {
     return false;
   }
 };
-=======
+
 const { sessions: buttonSessions } = require("./comandos/banControl");
 
 sock.ev.on("messages.upsert", async ({ messages }) => {
@@ -228,4 +228,4 @@ sock.ev.on("messages.upsert", async ({ messages }) => {
   // Remove a sessão após uso
   buttonSessions.delete(messageId);
 });
->>>>>>> f1f2f8b109f73461afb365e70fce39a3c008e9ff
+

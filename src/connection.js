@@ -1,26 +1,6 @@
-/**
- * Script de
- * inicialização do bot.
- *
- * Este script é
- * responsável por
- * iniciar a conexão
- * com o WhatsApp.
- *
- * Não é recomendado alterar
- * este arquivo,
- * a menos que você saiba
- * o que está fazendo.
- *
- * @author Dev Gui
- */
-<<<<<<< HEAD
 const path = require("node:path");
-=======
-
-const path = require("path");
 const fs = require("fs");
->>>>>>> f1f2f8b109f73461afb365e70fce39a3c008e9ff
+
 const { question, onlyNumbers } = require("./utils");
 const {
   default: makeWASocket,
@@ -44,7 +24,6 @@ const {
 const NodeCache = require("node-cache");
 const { TEMP_DIR } = require("./config");
 const { badMacHandler } = require("./utils/badMacHandler");
-const fs = require("node:fs");
 
 if (!fs.existsSync(TEMP_DIR)) {
   fs.mkdirSync(TEMP_DIR, { recursive: true });
@@ -56,22 +35,8 @@ const logger = pino(
 );
 logger.level = "error";
 
-<<<<<<< HEAD
 const msgRetryCounterCache = new NodeCache();
 
-async function connect() {
-  const baileysFolder = path.resolve(
-    __dirname,
-    "..",
-    "assets",
-    "auth",
-    "baileys"
-  );
-
-  const { state, saveCreds } = await useMultiFileAuthState(baileysFolder);
-
-  const { version, isLatest } = await fetchLatestBaileysVersion();
-=======
 /**
  * Cria a pasta temp caso não exista
  */
@@ -104,10 +69,8 @@ async function getMessage(key) {
  */
 async function connect(groupCache) {
   const baileysFolder = path.resolve(__dirname, "..", "assets", "auth", "baileys");
-
   const { state, saveCreds } = await useMultiFileAuthState(baileysFolder);
-  const { version } = await fetchLatestBaileysVersion();
->>>>>>> f1f2f8b109f73461afb365e70fce39a3c008e9ff
+  const { version, isLatest } = await fetchLatestBaileysVersion();
 
   const socket = makeWASocket({
     version,
@@ -131,7 +94,6 @@ async function connect(groupCache) {
   await handleInitialConnection(socket, groupCache);
 
   socket.ev.on("connection.update", async (update) => {
-<<<<<<< HEAD
     const { connection, lastDisconnect } = update;
 
     if (connection === "close") {
@@ -146,14 +108,12 @@ async function connect(groupCache) {
 
         if (badMacHandler.handleError(error, "connection.update")) {
           if (badMacHandler.hasReachedLimit()) {
-            warningLog(
-              "Limite de erros Bad MAC atingido. Limpando arquivos de sessão problemáticos..."
-            );
+            warningLog("Limite de erros Bad MAC atingido. Limpando arquivos de sessão problemáticos...");
             badMacHandler.clearProblematicSessionFiles();
             badMacHandler.resetErrorCount();
 
-            const newSocket = await connect();
-            load(newSocket);
+            const newSocket = await connect(groupCache);
+            load(newSocket, groupCache);
             return;
           }
         }
@@ -161,63 +121,21 @@ async function connect(groupCache) {
 
       if (statusCode === DisconnectReason.loggedOut) {
         errorLog("Bot desconectado!");
-        badMacErrorCount = 0;
       } else {
-        switch (statusCode) {
-          case DisconnectReason.badSession:
-            warningLog("Sessão inválida!");
-
-            const sessionError = new Error("Bad session detected");
-            if (badMacHandler.handleError(sessionError, "badSession")) {
-              if (badMacHandler.hasReachedLimit()) {
-                warningLog(
-                  "Limite de erros de sessão atingido. Limpando arquivos de sessão..."
-                );
-                badMacHandler.clearProblematicSessionFiles();
-                badMacHandler.resetErrorCount();
-              }
-            }
-            break;
-          case DisconnectReason.connectionClosed:
-            warningLog("Conexão fechada!");
-            break;
-          case DisconnectReason.connectionLost:
-            warningLog("Conexão perdida!");
-            break;
-          case DisconnectReason.connectionReplaced:
-            warningLog("Conexão substituída!");
-            break;
-          case DisconnectReason.multideviceMismatch:
-            warningLog("Dispositivo incompatível!");
-            break;
-          case DisconnectReason.forbidden:
-            warningLog("Conexão proibida!");
-            break;
-          case DisconnectReason.restartRequired:
-            infoLog('Me reinicie por favor! Digite "npm start".');
-            break;
-          case DisconnectReason.unavailableService:
-            warningLog("Serviço indisponível!");
-            break;
-        }
-
-        const newSocket = await connect();
-        load(newSocket);
+        handleDisconnectReason(statusCode);
+        const newSocket = await connect(groupCache);
+        load(newSocket, groupCache);
       }
     } else if (connection === "open") {
       successLog("Fui conectado com sucesso!");
       infoLog("Versão do WhatsApp Web: " + version.join("."));
-      infoLog(
-        "É a última versão do WhatsApp Web?: " + (isLatest ? "Sim" : "Não")
-      );
-      badMacErrorCount = 0;
+      infoLog("É a última versão do WhatsApp Web?: " + (isLatest ? "Sim" : "Não"));
       badMacHandler.resetErrorCount();
     } else {
       infoLog("Atualizando conexão...");
     }
-=======
+
     await handleConnectionUpdate(socket, update, groupCache);
->>>>>>> f1f2f8b109f73461afb365e70fce39a3c008e9ff
   });
 
   socket.ev.on("creds.update", saveCreds);
@@ -235,8 +153,7 @@ async function handleInitialConnection(socket, groupCache) {
     await promptForPhoneNumber(socket);
   }
 
-  const newSocket = await connect(groupCache);
-  load(newSocket, groupCache);
+  load(socket, groupCache);
 }
 
 /**
@@ -317,9 +234,7 @@ async function promptForPhoneNumber(socket) {
   const phoneNumber = await question("Informe o número de telefone do bot: ");
 
   if (!phoneNumber) {
-    errorLog(
-      'Número de telefone inválido! Tente novamente com o comando "npm start".'
-    );
+    errorLog('Número de telefone inválido! Tente novamente com o comando "npm start".');
     process.exit(1);
   }
 
@@ -330,4 +245,5 @@ async function promptForPhoneNumber(socket) {
 // Garante que a pasta temp exista.
 ensureTempDirectoryExists();
 
+// Exporta a função principal
 exports.connect = connect;

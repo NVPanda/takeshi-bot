@@ -21,13 +21,10 @@
     "correios-brasil": "^3.0.6",
     "fluent-ffmpeg": "^2.1.3",
     "node-cache": "^5.1.2",
-<<<<<<< HEAD
     "node-webpmux": "^3.2.1",
-    "pino": "^9.7.0"
-=======
+    "pino": "^9.7.0",
     "node-catbox": "^3.3.0",
     "pino": "^9.5.0",
     "takeshi-bot": "file:"
->>>>>>> f1f2f8b109f73461afb365e70fce39a3c008e9ff
   }
 }
