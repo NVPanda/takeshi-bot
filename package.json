@@ -1,49 +1,48 @@
 {
   "name": "takeshi-bot",
-  "version": "7.9.0",
-  "description": "Um bot de WhatsApp multifunções.",
-  "main": "index.js",
+  "version": "8.1.0",
+  "description": "Takeshi Bot Enterprise Edition - WhatsApp bot modular, escalável e ultra estável.",
+  "main": "src/index.js",
   "type": "module",
-  "scripts": {
-    "start": "node --watch ./src/index.js",
-    "test": "node ./src/test.js",
-    "test:all": "node --test"
-  },
-  "engines": {
-    "node": ">=22.8.0"
-  },
-  "keywords": [],
   "author": "GUIIREAL__NVPandaDEV",
   "license": "ISC",
+
+  "engines": {
+    "node": ">=20.11.0"
+  },
+
+  "scripts": {
+    "start": "node ./src/index.js",
+    "dev": "node --watch ./src/index.js",
+    "stable": "node --max-old-space-size=4096 ./src/index.js",
+    "enterprise": "node ./src/index.js",
+    "test": "node ./src/test.js",
+    "test:all": "node --test",
+
+    "clean": "bash ./scripts/reset.sh",
+    "reinstall": "rm -rf node_modules package-lock.json && npm install",
+
+    "restart": "npm run clean && npm run start"
+  },
+
   "dependencies": {
-<<<<<<< HEAD
     "@cacheable/node-cache": "^3.0.0",
     "axios": "^1.14.0",
     "baileys": "7.0.0-rc.9",
-=======
     "@anthropic-ai/sdk": "^0.63.1",
-    "@cacheable/node-cache": "^1.6.1",
     "@google/generative-ai": "^0.24.1",
-    "axios": "^1.12.2",
-    "baileys": "^6.7.19",
     "cheerio": "^1.1.2",
->>>>>>> e1e28f2e2300267f7948a03b8f086e46b38b8bb5
     "correios-brasil": "^3.0.6",
     "node-cache": "^5.1.2",
     "node-webpmux": "^3.2.1",
-<<<<<<< HEAD
     "openai": "^6.33.0",
     "pino": "^10.3.1",
     "tiktoken": "^1.0.21",
     "verbose": "^0.2.3"
   },
+
   "devDependencies": {
-    "dotenv": "^17.4.1"
-=======
-    "pino": "^9.7.0",
-    "node-catbox": "^3.3.0",
-    "pino": "^9.5.0",
-    "takeshi-bot": "file:"
->>>>>>> e1e28f2e2300267f7948a03b8f086e46b38b8bb5
+    "dotenv": "^17.4.1",
+    "node-catbox": "^3.3.0"
   }
 }
