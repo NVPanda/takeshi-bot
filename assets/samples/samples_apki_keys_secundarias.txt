@@ -1,0 +1,27 @@
+const { PREFIX, OPENAI_API_KEY } = require(`${BASE_DIR}/config`);
+const { OpenAI } = require('openai');
+const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+
+module.exports = {
+  name: "chatgpt",
+  description: "Pergunta algo ao ChatGPT",
+  commands: ["chatgpt", "gpt"],
+  usage: `${PREFIX}chatgpt <sua pergunta>`,
+  handle: async ({ args, send }) => {
+    if (!args.length) {
+      await send(`Uso: ${this.usage}`);
+      return;
+    }
+
+    try {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: args.join(' ') }],
+      });
+
+      await send(completion.choices[0].message.content);
+    } catch (error) {
+      await send('Erro no ChatGPT. Verifique a chave da API.');
+    }
+  },
+};

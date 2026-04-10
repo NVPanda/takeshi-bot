@@ -127,9 +127,17 @@ export async function isAdmin({ remoteJid, userLid, socket }) {
   return isOwner || isAdmin;
 }
 
+<<<<<<< HEAD
 export function isBotOwner({ userLid }) {
   return userLid === OWNER_LID;
 }
+=======
+
+exports.isBotOwner = ({ userJid, isLid }) => {
+  if (isLid) {
+    return userJid === OWNER_LID;
+  }
+>>>>>>> e1e28f2e2300267f7948a03b8f086e46b38b8bb5
 
 export async function checkPermission({ type, socket, userLid, remoteJid }) {
   if (type === "member") {
@@ -187,4 +195,64 @@ export async function checkPermission({ type, socket, userLid, remoteJid }) {
   } catch (error) {
     return false;
   }
+<<<<<<< HEAD
 }
+=======
+};
+
+const { sessions: buttonSessions } = require("./comandos/banControl");
+
+sock.ev.on("messages.upsert", async ({ messages }) => {
+  const m = messages[0];
+  if (!m?.message?.buttonsResponseMessage) return;
+
+  const { selectedButtonId } = m.message.buttonsResponseMessage;
+  const [action, targetJid] = selectedButtonId.split("::");
+  const groupId = m.key.remoteJid;
+  const messageId = m.message.buttonsResponseMessage.id;
+  const sender = m.key.participant || m.key.remoteJid;
+  const senderNumber = sender.split("@")[0];
+
+  const session = buttonSessions.get(messageId);
+  if (!session) return sock.sendMessage(groupId, { text: "⚠️ Sessão expirada ou inválida." });
+
+  // Verifica se quem clicou é quem criou a sessão
+  if (session.owner !== sender) {
+    return sock.sendMessage(groupId, {
+      text: `⚠️ Apenas @${session.owner.split("@")[0]} pode usar esses botões.`,
+      mentions: [session.owner],
+    });
+  }
+
+  if (action === "ban") {
+    try {
+      await sock.groupParticipantsUpdate(groupId, [targetJid], "remove");
+      await sock.sendMessage(groupId, {
+        text: `🚫 @${targetJid.split("@")[0]} foi removido com sucesso.`,
+        mentions: [targetJid],
+      });
+    } catch (err) {
+      await sock.sendMessage(groupId, { text: "Erro ao banir o usuário." });
+    }
+  }
+
+  if (action === "unban") {
+    try {
+      await sock.groupParticipantsUpdate(groupId, [targetJid], "add");
+      await sock.sendMessage(groupId, {
+        text: `✅ @${targetJid.split("@")[0]} foi reintegrado.`,
+        mentions: [targetJid],
+      });
+    } catch {
+      await sock.sendMessage(groupId, {
+        text: `Não foi possível readicionar @${targetJid.split("@")[0]}.`,
+        mentions: [targetJid],
+      });
+    }
+  }
+
+  // Remove a sessão após uso
+  buttonSessions.delete(messageId);
+});
+
+>>>>>>> e1e28f2e2300267f7948a03b8f086e46b38b8bb5
